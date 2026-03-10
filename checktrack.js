@@ -15,10 +15,14 @@ for (const {name, required} of track.projects) {
 
     else {  
         console.log(name, "existe");
+            for (const file of required) {
+                console.log(file, existsSync(join(projectP, file)));
+            }
+
         const gitOk = existsSync(join(projectP, ".git"));
+
         if (!gitOk) {
             console.log("- le repository git n'est pas initialisé");
-
         }
 };
 }
