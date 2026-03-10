@@ -12,5 +12,8 @@ for (const {name, required} of track.projects) {
         console.log(name, "existe");
     }
 
-    else { console.log(name, "n'existe pas") };
+    else {  
+        console.log("❌", name);
+        console.log("- le dossier n'existe pas où n'est pas nommé correctement");
+};
 }
