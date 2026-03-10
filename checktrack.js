@@ -15,14 +15,26 @@ for (const {name, required} of track.projects) {
 
     else {  
         console.log(name, "existe");
+
+            const missing = [];
+
             for (const file of required) {
-                console.log(file, existsSync(join(projectP, file)));
+                // console.log(file, existsSync(join(projectP, file)));
+                if (!existsSync(join(projectP, file))) { 
+                missing.push(file);   
+                }
+            }    
+                
+                if (missing.length === 1) {
+                 console.log("Il manque", missing[0]);
+                } else if ( missing.length > 1 ){
+                    const last = missing.pop();
+                    console.log("Il manque", missing.join(", "), "et", last);
+    }
             }
 
         const gitOk = existsSync(join(projectP, ".git"));
-
         if (!gitOk) {
             console.log("- le repository git n'est pas initialisé");
         }
-};
-}
+    }
