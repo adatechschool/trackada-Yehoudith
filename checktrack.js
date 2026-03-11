@@ -1,4 +1,4 @@
-import {readFileSync, existsSync, readdirSync} from "fs";
+import {readFileSync, existsSync} from "fs";
 import {join} from "path";
 import {homedir} from "os";
 
@@ -58,7 +58,7 @@ for (const {name, required} of track.projects) {
             }
         }
 }   
-let pourcentage = (fichiersOK / totalFichiers) * 100 ;
+let pourcentage = Math.round((fichiersOK / totalFichiers) * 100 );
 if (pourcentage < 100) {
 console.log(`❌ ${pourcentage}% des projets sont initialisés correctement (${fichiersOK}/${totalFichiers})`);
 } else {

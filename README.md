@@ -8,5 +8,4 @@ root : pour remplacer le ~ par c:/users ect...
 for, boucle qui parcourt le track.json, creer une const projectExist qui affiche le root et le nom du projet, et ensuite un console avec une condition en turner, si vrai, vert, si faux, rouge.
     const projectExists = existsSync(join(root, name)); join: joindre deux elements, grace au join de path, importer la haut.
 
-
-trouver la place de la condition du .git
+Maths.round arrondir le nombre
