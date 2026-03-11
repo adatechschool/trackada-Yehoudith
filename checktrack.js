@@ -9,12 +9,16 @@ for (const {name, required} of track.projects) {
     const projectP = join(root, name);
 
     if(!existsSync(projectP)){
-        console.log("❌", name);
+        console.log("❌ dossier du projet", name);
         console.log("- le dossier n'existe pas où n'est pas nommé correctement");
     }
 
     else {  
-        console.log(name, "existe");
+        // console.log(name, "existe");
+            const gitOk = existsSync(join(projectP, ".git"));
+            if (!gitOk) {
+            console.log("❌ dossier du projet", name);
+            console.log("- le repository git n'est pas initialisé");}
 
             const missing = [];
 
@@ -26,15 +30,21 @@ for (const {name, required} of track.projects) {
             }    
                 
                 if (missing.length === 1) {
-                 console.log("Il manque", missing[0]);
+                console.log("❌ dossier du projet", name);
+                console.log("- il manque", missing[0]);
                 } else if ( missing.length > 1 ){
                     const last = missing.pop();
-                    console.log("Il manque", missing.join(", "), "et", last);
-    }
+                    console.log("❌ dossier du projet", name);
+                    console.log("- il manque", missing.join(", "), "et", last);
+                } else if (!missing.length) {
+                console.log("✅ dossier du projet", name)
+        }
+
             }
+        }
 
         const gitOk = existsSync(join(projectP, ".git"));
         if (!gitOk) {
-            console.log("- le repository git n'est pas initialisé");
-        }
-    }
+            console.log("- le repository git n'est pas initialisé");}
+        
+
