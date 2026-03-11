@@ -11,40 +11,40 @@ for (const {name, required} of track.projects) {
     if(!existsSync(projectP)){
         console.log("❌ dossier du projet", name);
         console.log("- le dossier n'existe pas où n'est pas nommé correctement");
+        continue;
     }
 
-    else {  
+        const erreurs = [];
+            
         // console.log(name, "existe");
             const gitOk = existsSync(join(projectP, ".git"));
             if (!gitOk) {
-            console.log("❌ dossier du projet", name);
-            console.log("- le repository git n'est pas initialisé");}
-
-            const missing = [];
-
+                erreurs.push("- le repository git n'est pas initialisé");
+            }
+                const missing = [];
+            
             for (const file of required) {
-                // console.log(file, existsSync(join(projectP, file)));
+                // console.log(file, existsSync(join(projectP, file))); afficher les fichiers en individuels si ils sont true ou false
                 if (!existsSync(join(projectP, file))) { 
                 missing.push(file);   
                 }
             }    
                 
                 if (missing.length === 1) {
-                console.log("❌ dossier du projet", name);
-                console.log("- il manque", missing[0]);
-                } else if ( missing.length > 1 ){
+                    erreurs.push("- il manque " + missing[0]);
+            } 
+                if ( missing.length > 1 ){
                     const last = missing.pop();
-                    console.log("❌ dossier du projet", name);
-                    console.log("- il manque", missing.join(", "), "et", last);
-                } else if (!missing.length) {
+                     erreurs.push("- il manque " + missing.join(", ") + " et " + last);
+            }
+                if (erreurs.length === 0) {
                 console.log("✅ dossier du projet", name)
-        }
-
+            }
+            else {
+                 console.log("❌ dossier du projet", name);
+            for (const err of erreurs) {
+                console.log(err);
             }
         }
-
-        const gitOk = existsSync(join(projectP, ".git"));
-        if (!gitOk) {
-            console.log("- le repository git n'est pas initialisé");}
-        
+}   
 
