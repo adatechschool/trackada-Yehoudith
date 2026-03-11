@@ -4,13 +4,16 @@ import {homedir} from "os";
 
 const track = JSON.parse(readFileSync("./track.json"));
 const root = track.root.replace("~", homedir());
-
 const adaYN = join(homedir(), "ada");
+let totalFichiers = track.projects.length;
+let fichiersOK = 0;
 
 if (existsSync(adaYN)) {
+    totalFichiers++;
     console.log("✅ dossier ada");
 } else {
-    console.log("❌ dossier ada");}
+    console.log("❌ dossier ada");
+}
 
 for (const {name, required} of track.projects) {
     const projectP = join(root, name);
@@ -45,6 +48,7 @@ for (const {name, required} of track.projects) {
                      erreurs.push("- il manque " + missing.join(", ") + " et " + last);
             }
                 if (erreurs.length === 0) {
+                fichiersOK++;
                 console.log("✅ dossier du projet", name)
             }
             else {
@@ -54,3 +58,9 @@ for (const {name, required} of track.projects) {
             }
         }
 }   
+let pourcentage = (fichiersOK / totalFichiers) * 100 ;
+if (pourcentage < 100) {
+console.log(`❌ ${pourcentage}% des projets sont initialisés correctement (${fichiersOK}/${totalFichiers})`);
+} else {
+console.log(`✅ Tous les projets sont initialisés correctement (${fichiersOK}/${totalFichiers})`);
+}
