@@ -8,51 +8,69 @@ const root = track.root.replace("~", homedir());
 const adaYN = join(homedir(), "ada");
 let totalFichiers = track.projects.length;
 let fichiersOK = 0;
-const missingDossier = [];
+const existingProjects = [];
+const missingProjects = [];
 
 if (existsSync(adaYN)) {
     totalFichiers++;
+    existingProjects.push(adaYN);
     console.log(chalk.green("✅ dossier ada"));
 } else {
-    missingDossier.push(adaYN);
+    missingProjects.push(adaYN);
     console.log("❌ dossier ada");
 }
 
+
+
 for (const {name, required} of track.projects) {
     const projectP = join(root, name);
+    const filesOfMissingProject = [];
 
     if(!existsSync(projectP)){
-        missingDossier.push(projectP);
+
+        missingProjects.push(projectP);
+        filesOfMissingProject.push(".git");
+        for (const file of required) {
+        filesOfMissingProject.push(file);
+        }
+        missingProjects.push(filesOfMissingProject);
         console.log(chalk.red("❌ dossier du projet"), chalk.red(name));
         console.log("- le dossier n'existe pas où n'est pas nommé correctement");
         continue;
     }
 
         const erreurs = [];
-            
         // console.log(name, "existe");
             const gitOk = existsSync(join(projectP, ".git"));
             if (!gitOk) {
+                
+                // filesOfExistingProject.push(gitOk);
                 erreurs.push("- le repository git n'est pas initialisé");
             }
                 const missingFichiers = [];
-            
+                const filesOfExistingProject = [];    
+
             for (const file of required) {
-                // console.log(file, existsSync(join(projectP, file))); afficher les fichiers en individuels si ils sont true ou false
+                // console.log(file, existsSync(join(projectP, file))); //afficher les fichiers en individuels si ils sont true ou false
                 if (!existsSync(join(projectP, file))) { 
                 missingFichiers.push(file); 
+                filesOfExistingProject.push(file);
                 }
             }    
-                
+                // console.log(filesOfExistingProject);
+            
+
                 if (missingFichiers.length === 1) {
-                    missingDossier.push(projectP);
-                    erreurs.push("- il manque " + missing[0]);
+                    // existingProjects.push(projectP);
+                    erreurs.push("- il manque " + missingFichiers[0]);
             } 
                 if ( missingFichiers.length > 1 ){
-                    missingDossier.push(projectP);
+                    // existingProjects.push(projectP);
                     const last = missingFichiers.pop();
                     erreurs.push("- il manque " + missingFichiers.join(", ") + " et " + last);
                     }
+                
+
                 if (erreurs.length === 0) {
                 fichiersOK++;
                 console.log(chalk.green("✅ dossier du projet"), chalk.green(name));
@@ -62,6 +80,7 @@ for (const {name, required} of track.projects) {
                  console.log(chalk.red("❌ dossier du projet"), chalk.red(name));
             for (const err of erreurs) {
                 console.log(err);
+                existingProjects.push(filesOfExistingProject);
             }
         }
 }  
@@ -74,4 +93,6 @@ console.log(chalk.red(`❌ ${pourcentage}% des projets sont initialisés correct
 console.log(chalk.green(`✅ Tous les projets sont initialisés correctement (${fichiersOK}/${totalFichiers})`));
 }
 
-console.log(missingDossier);
+console.log(existingProjects);
+console.log(missingProjects);
+
