@@ -1,4 +1,4 @@
-import {readFileSync, existsSync} from "fs";
+import {readFileSync, existsSync, mkdir} from "fs";
 import {join} from "path";
 import {homedir} from "os";
 import chalk from "chalk";
@@ -8,11 +8,13 @@ const root = track.root.replace("~", homedir());
 const adaYN = join(homedir(), "ada");
 let totalFichiers = track.projects.length;
 let fichiersOK = 0;
+const missingDossier = [];
 
 if (existsSync(adaYN)) {
     totalFichiers++;
     console.log(chalk.green("✅ dossier ada"));
 } else {
+    missingDossier.push(adaYN);
     console.log("❌ dossier ada");
 }
 
@@ -20,6 +22,7 @@ for (const {name, required} of track.projects) {
     const projectP = join(root, name);
 
     if(!existsSync(projectP)){
+        missingDossier.push(projectP);
         console.log(chalk.red("❌ dossier du projet"), chalk.red(name));
         console.log("- le dossier n'existe pas où n'est pas nommé correctement");
         continue;
@@ -32,22 +35,24 @@ for (const {name, required} of track.projects) {
             if (!gitOk) {
                 erreurs.push("- le repository git n'est pas initialisé");
             }
-                const missing = [];
+                const missingFichiers = [];
             
             for (const file of required) {
                 // console.log(file, existsSync(join(projectP, file))); afficher les fichiers en individuels si ils sont true ou false
                 if (!existsSync(join(projectP, file))) { 
-                missing.push(file);   
+                missingFichiers.push(file); 
                 }
             }    
                 
-                if (missing.length === 1) {
+                if (missingFichiers.length === 1) {
+                    missingDossier.push(projectP);
                     erreurs.push("- il manque " + missing[0]);
             } 
-                if ( missing.length > 1 ){
-                    const last = missing.pop();
-                     erreurs.push("- il manque " + missing.join(", ") + " et " + last);
-            }
+                if ( missingFichiers.length > 1 ){
+                    missingDossier.push(projectP);
+                    const last = missingFichiers.pop();
+                    erreurs.push("- il manque " + missingFichiers.join(", ") + " et " + last);
+                    }
                 if (erreurs.length === 0) {
                 fichiersOK++;
                 console.log(chalk.green("✅ dossier du projet"), chalk.green(name));
@@ -68,3 +73,5 @@ console.log(chalk.red(`❌ ${pourcentage}% des projets sont initialisés correct
 } else {
 console.log(chalk.green(`✅ Tous les projets sont initialisés correctement (${fichiersOK}/${totalFichiers})`));
 }
+
+console.log(missingDossier);
